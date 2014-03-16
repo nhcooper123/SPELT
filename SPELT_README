@@ -1,0 +1,44 @@
+#--------------------------------------------------
+#SPELT method
+#--------------------------------------------------
+
+#Requires ape
+
+
+#--------------------------------------------------
+
+#Input
+#--------------------------------------------------
+
+
+#primary.variable = primary variable which you think is driving evolution of the lagged trait
+
+#lag.variable = variable you think is lagging behind the primary variable
+
+#phy = phylogeny
+
+#data = dataset as a data.frame
+
+#speciesnames = name of the column in your dataset with the species names
+
+#age.limit = numeric variable allowing the user to set a minimum age for branches to use
+#This will result in an error with < 3 branches of sufficient length because it is not 
+	#possible to fit the model with less than 3 species pairs
+#warn.dropped = if TRUE gives a list of species dropped because they are not in the tree and data
+
+#--------------------------------------------------
+
+#Output
+#--------------------------------------------------
+
+#1 - plot of residuals versus divergence time
+
+#2 - model output of residuals versus divergence time
+
+#3 - dataset with summary variables
+
+	#i.e. pair number, the species in each pair, values of their response and lag variables, 
+
+	#branch length, contrasts and residuals from model
+	#Also $dropped showing the species in the tree and not the data
+	#or in the data and not the tree.
