@@ -1,106 +1,126 @@
+#Function for detecting evolutionary lag
+#Using method of Deaner and Nunn 1999
+
+#----FUNCTIONS-----
+#Identify column numbers
+column.ID <- function(data, column.name) { 
+  which(names(data)==column.name)
+}	
+
+#Check species match
+id.missing.data <- function(phy, data, speciesnames) {
+  speciesnames.col <- column.ID(data, speciesnames)
+  tree.not.data <- setdiff(phy$tip.label, data[,speciesnames.col])
+  data.not.tree <- setdiff(data[,speciesnames.col], phy$tip.label)
+  return(tree.not.data)
+  return(data.not.tree)
+}  		
+
+#Remove incomplete data
+remove.incomplete.data <- function(data, var1, var2) {
+  id<-complete.cases(data[,c(var1,var2)])
+  data<-data[id,]
+  return(data)
+}
+
+#Remove missing species
+remove.missing.data <- function(phy, data, speciesnames) {
+  id.missing.data(phy, data, speciesnames)
+  if(length(tree.not.data)>0) {
+    phy <- drop.tip(phy, tree.not.data)
+  } 
+  else {
+    phy <- phy
+  }
+  if(length(data.not.tree)>0) {
+    speciesnames.col <- column.ID(data, speciesnames)
+    matches<-match(data[,speciesnames.col], data.not.tree)
+    data <- subset(data, matches!=0)
+  } 
+  else {
+    data <- data
+  }
+  return(data)
+  return(phy)
+}
+
+#Identify total number of nodes in tree
+total.nodes <- function(phy) {
+  length(phy$tip.label)
+}
+
+#Exclude branches above an age limit
+age.limit <- function(data, branch.col, age.limit)
+  branch <- column.ID(data, branch.col)
+  }
+  data <- data[-(c(which(data[,branch] < age.limit))),]
+  if(length(data[,branch]<3) {
+    stop("< 3 branches longer than age.limit")
+}
+
+#Identify cherries (independent pairs of nodes)
+cherry.nodes <- function(phy) {
+  names(which(table(phy$edge[,1][phy$edge[,2] <= total.nodes])==2))
+}
+
+#Bag
+for (i in 1:length(cherry.nodes)){
+
+	pairs.data$pair[i]<-i	
+
+	pairs.data$species1[i]<-phy$tip.label[phy$edge[,2][which(phy$edge[,1]==cherry.nodes[i])][1]]#species 1 of the pair
+
+	pairs.data$species2[i]<-phy$tip.label[phy$edge[,2][which(phy$edge[,1]==cherry.nodes[i])][2]]#species 2 of the pair
+
+	pairs.data$species1_primary[i]<-data[which(rownames(data)==pairs.data$species1[i]),colno.primary.variable]#primary variable for species 1
+
+	pairs.data$species2_primary[i]<-data[which(rownames(data)==pairs.data$species2[i]),colno.primary.variable]#primary variable for species 2
+
+	pairs.data$species1_lag[i]<-data[which(rownames(data)==pairs.data$species1[i]),colno.lag]#lag variable for species 1
+
+	pairs.data$species2_lag[i]<-data[which(rownames(data)==pairs.data$species2[i]),colno.lag]#lag variable for species 2
+
+	pairs.data$branch[i]<-phy$edge.length[which(phy$edge[,1]==cherry.nodes[i])][1]#branch length for contrast
 
 
+
+
+#----------------------------
+#Actual SPELT function
 SPELT<-function(phy, data, primary.variable, lag.variable, speciesnames, age.limit = NA, warn.dropped = TRUE){
 
+source(SPELT_functions.R)
 require(ape)
 
 #Add checks to code
+#Ensure tree is fully bifurcating
+phy<-multi2di(phy)
 
 if (!inherits(data, "comparative.data")) 
         stop("data is not a 'comparative' data object.")
 
+#Define variables
+primary.var.col<-column.ID(data, primary.variable)
+lag.var.col<-column.ID(data, lag.variable)
+speciesnames.col<-column.ID(data, speciesnames)
 
-z<-function(data, primary.variable, lag.variable, speciesnames){
-
-get.col<-function(x, data){which(names(data)==deparse(substitute(x)))}
-
-#Issues with deparsing column names here
-
-primary.var.col<-get.col(primary.variable, data)
-lag.var.col<-get.col(lag.variable, data)
-speciesnames.col<-get.col(speciesnames, data)
-
-return(lag.var.col)
-
-}
-
-
-#-------------------------------------------------
 #Warning message showing which species don't match
-#-------------------------------------------------
+if(warn.dropped){id.missing.data()
 
-if(warn.dropped){
-
-   Tree.not.data <- setdiff(phy$tip.label, data[,colno.speciesnames])
-   Data.not.tree <- setdiff(data[,colno.speciesnames], phy$tip.label)
-		
 			}
-
-
-#--------------------------------------------------
 
 #Strip data and tree to remove missing values
 
-#--------------------------------------------------
-
-
-
-id<-complete.cases(data[, c(colno.primary.variable,colno.lag)])
-
-data<-data[id,]
-
-
-
-matches<-match(phy$tip.label, data[,colno.speciesnames], nomatch = 0)  
-
-not<-subset(phy$tip.label, matches == 0)
-
-
-
-if(length(not)>0){
-
-phy<-drop.tip(phy, not)
-
-}else{phy<-phy}
-
-
-
-matches2<-match(data[,colno.speciesnames], phy$tip.label, nomatch = 0)  
-
-data<-subset(data, matches2 !=0)
-
-#--------------------------------------------------
-
-#Ensure tree is fully bifurcating
-
-#--------------------------------------------------
-
-phy<-multi2di(phy)
-
-
-#--------------------------------------------------
 
 #Make rownames into species names
 
-#--------------------------------------------------
-
-
-
 rownames(data)<-data[,colno.speciesnames]
 
-
-
-#--------------------------------------------------
 
 #Identify independent species pairs
 
 #--------------------------------------------------
 
-
-
-total.nodes <- length(phy$tip.label)
-
-cherry.nodes<-names(which(table(phy$edge[, 1][phy$edge[, 2] <= total.nodes])==2)) #detects independent pairs (cherries)
 
 
 
