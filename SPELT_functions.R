@@ -80,11 +80,11 @@ branch.length.pair <- function(node.list) {
 #Build empty dataset for SPELT
 build.SPELT.data <- function(phy) {
   SPELT.data <- data.frame(array(dim = c(length(cherry.nodes(phy)),10)))
-  names(SPELT.data)<-c("species1", "species2", "species1.primary.var", 
-                       "species2.primary.var", "species1.lag.var",
-                       "species2.lag.var", "branch.length", 
-                       "contrast.primary.var", "contrast.lag.var", 
-                       "residuals")
+#  colnames(SPELT.data)<-c("species1", "species2", "species1.primary.var", 
+#                       "species2.primary.var", "species1.lag.var",
+#                       "species2.lag.var", "branch.length", 
+#                       "contrast.primary.var", "contrast.lag.var", 
+#                       "residuals")
 }
 
 #Calculate contrasts (primary variable contrast is always positive)
@@ -126,7 +126,30 @@ lag.model <- function(SPELT.data) {
 }
 
 #Plotting function for SPELT objects
-plot.SPELT <- function()
+plot.SPELT <- function(SPELT.results) {
+  plot(SPELT.data[,10] ~ SPELT.data[,7], xlab = "divergence time", 
+       ylab = "residuals", main = "SPELT plot", pch = 16)
+  abline(lag.model(SPELT.data))
+  abline(0,0,lty = 2)
+}  
 
 #Summary function for SPELT objects
-summary.SPELT <- function()
+summary.SPELT <- function(object, ...) {
+  ans <- list(call = object$call)
+  class(ans) <- "summary.SPELT"
+  estimate <- unclass(summary(object)$coefficients)[1:2]
+  sterr <- unclass(summary(object)$coefficients)[3:4]
+  t <- unclass(summary(object)$coefficients)[5:6]
+  p <- unclass(summary(object)$coefficients)[7:8]
+  coef <- cbind(estimate, sterr, t, p)
+  colnames(coef) <- c("Estimate", "Std. Error", "t value", 
+                      "Pr(>|t|)")
+  ans$coefficients <- coef
+  ans$df <- unclass(summary(object)$df)[2]
+  ans$AIC <- AIC(object)
+  ans$r.squared <- unclass(summary(object)$r.squared)
+  return(ans)
+  ans$fitted <- fitted(object)
+  ans$residuals <- residuals(object)
+  
+}
