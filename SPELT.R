@@ -52,7 +52,7 @@ total.nodes <- function(phy) {
   length(phy$tip.label)
 }
 
-#Identify cherries (independent pairs of nodes)
+#Identify cherries (independent pairs of species from one node)
 cherry.nodes <- function(phy) {
   names(which(table(phy$edge[,1][phy$edge[,2]<=total.nodes(phy)])==2))
 }
@@ -67,24 +67,72 @@ age.limit <- function(data, branch.col, age.limit)
   }
 }
 
-#Identify species coming from node
-node.species <- function(phy, node.list) {
-    species1<-sapply(node.list, function(x) phy$tip.label[phy$edge[,2][which(phy$edge[,1]==x)][1]])
-    species2<-sapply(node.list, function(x) phy$tip.label[phy$edge[,2][which(phy$edge[,1]==x)][2]])
+#Identify 1st species coming from node
+node.species1 <- function(phy, node.list) {
+  sapply(node.list, function(x) phy$tip.label[phy$edge[,2][which(phy$edge[,1]==x)][1]])
+}
 
-    list(species1=species1, species2=species2)
-  }  
+#Identify 2nd species coming from node
+node.species2 <- function(phy, node.list) {
+  sapply(node.list, function(x) phy$tip.label[phy$edge[,2][which(phy$edge[,1]==x)][2]])
 }
 
 #Extract data for species
 contrast.data <- function(data, variable.col, species.list) {
-  species.data <- sapply(species.list, function(x) data[which(rownames(data)==x),variable.col])
+  sapply(species.list, function(x) data[which(rownames(data)==x),variable.col])
 }
 
 #Extract branch length for contrast between two species
 branch.length.pair <- function(node.list) {
   sapply(node.list, function(x) phy$edge.length[which(phy$edge[,1]==x)][1])
 }
+
+#Build empty dataset for SPELT
+build.SPELT.data <- function(phy)
+  SPELT.data <- data.frame(array(dim = c(length(cherry.nodes(phy)),9)))
+}
+
+#Fill data set for SPELT
+add.SPELT.data <- function(phy, data, node.list, var1.col, var2.col) {
+  SPELT.data[,1] <- node.species1(phy,node.list)
+  SPELT.data[,2] <- node.species2(phy,node.list)
+  SPELT.data[,3] <- contrast.data(data, var1.col, SPELT.data[,1])
+  SPELT.data[,4] <- contrast.data(data, var1.col, SPELT.data[,2])
+  SPELT.data[,5] <- contrast.data(data, var2.col, SPELT.data[,1])
+  SPELT.data[,6] <- contrast.data(data, var2.col, SPELT.data[,2])
+  SPELT.data[,7] <- branch.length.pair(node.list)
+  SPELT.data[,8] <- 
+  SPELT.data[,9] <-
+}
+
+
+#--------------------------------------------------             
+
+#Calculate independent contrasts, maintaining sign
+
+#Primary variable contrast is always positive
+
+#Lag variable contrast can be positive or negative
+
+#--------------------------------------------------
+
+
+if(pairs.data$species1_primary[i] > pairs.data$species2_primary[i]){
+
+    pairs.data$contr.primary[i]<- pairs.data$species1_primary[i] - pairs.data$species2_primary[i]           
+
+    pairs.data$contr.lag[i]<-pairs.data$species1_lag[i] - pairs.data$species2_lag[i]    
+
+    }else{  
+
+    pairs.data$contr.primary[i]<- pairs.data$species2_primary[i] - pairs.data$species1_primary[i]
+
+    pairs.data$contr.lag[i]<-pairs.data$species2_lag[i] - pairs.data$species1_lag[i]
+
+    }
+
+    }
+
 
 
 #----------------------------
