@@ -78,178 +78,105 @@ node.species2 <- function(phy, node.list) {
 }
 
 #Extract data for species
-contrast.data <- function(data, variable.col, species.list) {
+get.data <- function(data, variable.col, species.list) {
   sapply(species.list, function(x) data[which(rownames(data)==x),variable.col])
 }
 
 #Extract branch length for contrast between two species
+#Need a fix for polytomies!!! == numeric(0)
 branch.length.pair <- function(node.list) {
   sapply(node.list, function(x) phy$edge.length[which(phy$edge[,1]==x)][1])
 }
 
 #Build empty dataset for SPELT
-build.SPELT.data <- function(phy)
+build.SPELT.data <- function(phy) {
   SPELT.data <- data.frame(array(dim = c(length(cherry.nodes(phy)),9)))
+  names(SPELT.data)<-c("species1", "species2", "species1.primary.var", "species2.primary.var",
+        "species1.lag.var","species2.lag.var", "branch.length", "contrast.primary.var", "contrast.lag.var")
+}
+
+#Calculate contrasts (primary variable contrast is always positive)
+
+get.raw.contrasts <- function(SPELT.data) { 
+  for(i in seq_along(SPELT.data[,1])) {
+    if(SPELT.data[i,3] > SPELT.data[i,4]) {
+      SPELT.data[i,8] <- SPELT.data[i,3] - SPELT.data[i,4]
+      SPELT.data[i,9] <- SPELT.data[i,5] - SPELT.data[i,6]
+    } else {
+      SPELT.data[i,8] <- SPELT.data[i,4] - SPELT.data[i,3]
+      SPELT.data[i,9] <- SPELT.data[i,6] - SPELT.data[i,5]
+    }
+  }  
+  return(SPELT.data)
 }
 
 #Fill data set for SPELT
-add.SPELT.data <- function(phy, data, node.list, var1.col, var2.col) {
+add.SPELT.data <- function(phy, data, node.list, var1.col, var2.col, SPELT.data) {
   SPELT.data[,1] <- node.species1(phy,node.list)
   SPELT.data[,2] <- node.species2(phy,node.list)
-  SPELT.data[,3] <- contrast.data(data, var1.col, SPELT.data[,1])
-  SPELT.data[,4] <- contrast.data(data, var1.col, SPELT.data[,2])
-  SPELT.data[,5] <- contrast.data(data, var2.col, SPELT.data[,1])
-  SPELT.data[,6] <- contrast.data(data, var2.col, SPELT.data[,2])
+  SPELT.data[,3] <- get.data(data, var1.col, SPELT.data[,1])
+  SPELT.data[,4] <- get.data(data, var1.col, SPELT.data[,2])
+  SPELT.data[,5] <- get.data(data, var2.col, SPELT.data[,1])
+  SPELT.data[,6] <- get.data(data, var2.col, SPELT.data[,2])
   SPELT.data[,7] <- branch.length.pair(node.list)
-  SPELT.data[,8] <- 
-  SPELT.data[,9] <-
+  
+  get.raw.contrasts(SPELT.data)
+
 }
-
-
-#--------------------------------------------------             
-
-#Calculate independent contrasts, maintaining sign
-
-#Primary variable contrast is always positive
-
-#Lag variable contrast can be positive or negative
-
-#--------------------------------------------------
-
-
-if(pairs.data$species1_primary[i] > pairs.data$species2_primary[i]){
-
-    pairs.data$contr.primary[i]<- pairs.data$species1_primary[i] - pairs.data$species2_primary[i]           
-
-    pairs.data$contr.lag[i]<-pairs.data$species1_lag[i] - pairs.data$species2_lag[i]    
-
-    }else{  
-
-    pairs.data$contr.primary[i]<- pairs.data$species2_primary[i] - pairs.data$species1_primary[i]
-
-    pairs.data$contr.lag[i]<-pairs.data$species2_lag[i] - pairs.data$species1_lag[i]
-
-    }
-
-    }
-
-
 
 #----------------------------
 #Actual SPELT function
 SPELT<-function(phy, data, primary.variable, lag.variable, speciesnames, age.limit = NA, warn.dropped = TRUE){
 
-source(SPELT_functions.R)
-require(ape)
+  source(SPELT_functions.R)
+  require(ape)
 
-#Add checks to code
-#Ensure tree is fully bifurcating
-phy<-multi2di(phy)
+------------------------------------------
+  #Add checks to code
+  #Ensure tree is fully bifurcating
+  phy<-multi2di(phy)
 
-if (!inherits(data, "comparative.data")) 
+  if (!inherits(data, "comparative.data")) 
         stop("data is not a 'comparative' data object.")
-
-#Define variables
-
-speciesnames.col <- column.ID(data, speciesnames)
-
-primary.var.col<-column.ID(data, primary.variable)
-lag.var.col<-column.ID(data, lag.variable)
-speciesnames.col<-column.ID(data, speciesnames)
-
-#Warning message showing which species don't match
-if(warn.dropped){id.missing.data()
-
-			}
-
-#Strip data and tree to remove missing values
-
 
 #Make rownames into species names
 
 rownames(data)<-data[,colno.speciesnames]
 
+#Warning message showing which species don't match
+if(warn.dropped){id.missing.data()
 
-#Identify independent species pairs
+      }
+----------------------------------
 
-#--------------------------------------------------
+  #Define variables
+  var1.col<-column.ID(data, primary.variable)
+  var2.col<-column.ID(data, lag.variable)
+  speciesnames.col<-column.ID(data, speciesnames)
 
+  #Tidy up data and tree
+  data <- remove.incomplete.data(data, var1.col, var2.col)
+  data <- remove.missing.species.data(phy, data, speciesnames.col)
+  phy <- remove.missing.species.tree(phy, data, speciesnames.col)
 
+  #Identify cherries (independent pairs of species from one node)
+  node.list <- cherry.nodes(phy)
+  
+  #Build empty dataset for SPELT
+  SPELT.data <- build.SPELT.data(phy)
+  SPELT.data <- add.SPELT.data(phy, data, node.list, var1.col, var2.col, SPELT.data)
 
+--------------------
+  #Exclude branches above an age limit
+  age.limit <- function(data, branch.col, age.limit)
+  data <- data[-(c(which(data[,branch.col]<age.limit))),]
+  if(length(data[,branch.col]<3) {
+    stop("< 3 branches longer than age.limit")
+  } else {
+  return(data)
+  }
+}
 
-#--------------------------------------------------
-
-#Setup dataframe for results
-
-#--------------------------------------------------
-
-
-
-pairs.data<-data.frame(array(dim = c(length(cherry.nodes),10)))#makes new dataframe to put summary data into
-
-names(pairs.data)<-c("pair", "species1", "species2", "species1_primary", "species2_primary",
-				"species1_lag","species2_lag", "branch", "contr.primary", "contr.lag")
-
-
-
-#---------------------------------------------------------------------------------
-
-#Identify species, variables and branch lengths for each independent species pair
-
-#Input into pairs.data dataframe
-
-#---------------------------------------------------------------------------------
-
-
-
-for (i in 1:length(cherry.nodes)){
-
-
-
-	pairs.data$pair[i]<-i	
-
-	pairs.data$species1[i]<-phy$tip.label[phy$edge[,2][which(phy$edge[,1]==cherry.nodes[i])][1]]#species 1 of the pair
-
-	pairs.data$species2[i]<-phy$tip.label[phy$edge[,2][which(phy$edge[,1]==cherry.nodes[i])][2]]#species 2 of the pair
-
-	pairs.data$species1_primary[i]<-data[which(rownames(data)==pairs.data$species1[i]),colno.primary.variable]#primary variable for species 1
-
-	pairs.data$species2_primary[i]<-data[which(rownames(data)==pairs.data$species2[i]),colno.primary.variable]#primary variable for species 2
-
-	pairs.data$species1_lag[i]<-data[which(rownames(data)==pairs.data$species1[i]),colno.lag]#lag variable for species 1
-
-	pairs.data$species2_lag[i]<-data[which(rownames(data)==pairs.data$species2[i]),colno.lag]#lag variable for species 2
-
-	pairs.data$branch[i]<-phy$edge.length[which(phy$edge[,1]==cherry.nodes[i])][1]#branch length for contrast
-
-				
-
-#--------------------------------------------------							
-
-#Calculate independent contrasts, maintaining sign
-
-#Primary variable contrast is always positive
-
-#Lag variable contrast can be positive or negative
-
-#--------------------------------------------------
-
-
-if(pairs.data$species1_primary[i] > pairs.data$species2_primary[i]){
-
-		pairs.data$contr.primary[i]<-	pairs.data$species1_primary[i] - pairs.data$species2_primary[i]						
-
-		pairs.data$contr.lag[i]<-pairs.data$species1_lag[i] - pairs.data$species2_lag[i]		
-
-		}else{	
-
-		pairs.data$contr.primary[i]<-	pairs.data$species2_primary[i] - pairs.data$species1_primary[i]
-
-		pairs.data$contr.lag[i]<-pairs.data$species2_lag[i] - pairs.data$species1_lag[i]
-
-		}
-
-		}
 
 #-----------------------------------------------------
 #Remove branches shorter than user defined age limit
