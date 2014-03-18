@@ -6,42 +6,47 @@
 column.ID <- function(data, column.name) { 
   which(names(data)==column.name)
 }	
-
-#Check species match
-id.missing.data <- function(phy, data, speciesnames) {
-  speciesnames.col <- column.ID(data, speciesnames)
-  tree.not.data <- setdiff(phy$tip.label, data[,speciesnames.col])
-  data.not.tree <- setdiff(data[,speciesnames.col], phy$tip.label)
-  return(tree.not.data)
-  return(data.not.tree)
-}  		
-
+ 
 #Remove incomplete data
-remove.incomplete.data <- function(data, var1, var2) {
-  id<-complete.cases(data[,c(var1,var2)])
-  data<-data[id,]
+remove.incomplete.data <- function(data, var1.col, var2.col) {
+  id <- complete.cases(data[,c(var1.col,var2.col)])
+  data <- data[id,]
   return(data)
 }
 
-#Remove missing species
-remove.missing.data <- function(phy, data, speciesnames) {
-  id.missing.data(phy, data, speciesnames)
+#ID species in tree that are not in the data
+id.missing.tree <- function(phy, data, speciesnames.col) {
+  tree.not.data <- setdiff(phy$tip.label, data[,speciesnames.col])
+  list(tree.not.data=tree.not.data)
+}
+
+#ID species in data that are not in the tree
+id.missing.data <- function(phy, data, speciesnames.col) {
+  data.not.tree <- setdiff(data[,speciesnames.col], phy$tip.label)
+  list(data.not.tree=data.not.tree)
+}    
+
+#Remove missing species from tree
+remove.missing.species.tree <- function(phy, data, speciesnames.col) {
+  id.missing.tree(phy, data, speciesnames.col)
   if(length(tree.not.data)>0) {
     phy <- drop.tip(phy, tree.not.data)
-  } 
-  else {
+  } else {
     phy <- phy
   }
+  return(phy)
+}
+
+#Remove missing species from data
+remove.missing.species.data <- function(phy, data, speciesnames.col) {
+  id.missing.data(phy, data, speciesnames.col)
   if(length(data.not.tree)>0) {
-    speciesnames.col <- column.ID(data, speciesnames)
-    matches<-match(data[,speciesnames.col], data.not.tree)
+    matches <- match(data[,speciesnames.col], data.not.tree)
     data <- subset(data, matches!=0)
-  } 
-  else {
+  } else {
     data <- data
   }
   return(data)
-  return(phy)
 }
 
 #Identify total number of nodes in tree
@@ -49,40 +54,42 @@ total.nodes <- function(phy) {
   length(phy$tip.label)
 }
 
-#Exclude branches above an age limit
-age.limit <- function(data, branch.col, age.limit)
-  branch <- column.ID(data, branch.col)
-  }
-  data <- data[-(c(which(data[,branch] < age.limit))),]
-  if(length(data[,branch]<3) {
-    stop("< 3 branches longer than age.limit")
-}
-
 #Identify cherries (independent pairs of nodes)
 cherry.nodes <- function(phy) {
-  names(which(table(phy$edge[,1][phy$edge[,2] <= total.nodes])==2))
+  names(which(table(phy$edge[,1][phy$edge[,2] <= total.nodes(phy)])==2))
 }
 
-#Bag
-for (i in 1:length(cherry.nodes)){
+#Exclude branches above an age limit
+age.limit <- function(data, branch.col, age.limit)
+  data <- data[-(c(which(data[,branch.col]<age.limit))),]
+  if(length(data[,branch.col]<3) {
+    stop("< 3 branches longer than age.limit")
+  } else {
+  return(data)
+  }
+}
 
-	pairs.data$pair[i]<-i	
+#Identify species coming from node
+node.species <- function(phy, node) {
+  for (i in seq_along(node)) {
+    species1<-phy$tip.label[phy$edge[,2][which(phy$edge[,1]==node[i])][1]]
+    species2<-phy$tip.label[phy$edge[,2][which(phy$edge[,1]==node[i])][2]]
 
-	pairs.data$species1[i]<-phy$tip.label[phy$edge[,2][which(phy$edge[,1]==cherry.nodes[i])][1]]#species 1 of the pair
+    list(species1=species1, species2=species2)
+  }  
+}
 
-	pairs.data$species2[i]<-phy$tip.label[phy$edge[,2][which(phy$edge[,1]==cherry.nodes[i])][2]]#species 2 of the pair
+#Extract data for species
+contrast.data <- function(data, variable, species) {
+  variable.col <- column.ID(data, variable)
+  species.data <- data[which(rownames(data)==species),variable.col]
+}
 
-	pairs.data$species1_primary[i]<-data[which(rownames(data)==pairs.data$species1[i]),colno.primary.variable]#primary variable for species 1
-
-	pairs.data$species2_primary[i]<-data[which(rownames(data)==pairs.data$species2[i]),colno.primary.variable]#primary variable for species 2
-
-	pairs.data$species1_lag[i]<-data[which(rownames(data)==pairs.data$species1[i]),colno.lag]#lag variable for species 1
-
-	pairs.data$species2_lag[i]<-data[which(rownames(data)==pairs.data$species2[i]),colno.lag]#lag variable for species 2
-
-	pairs.data$branch[i]<-phy$edge.length[which(phy$edge[,1]==cherry.nodes[i])][1]#branch length for contrast
-
-
+#Extract branch length for contrast between two species
+branch.length.pair <- function(node) {
+  branch.length <- phy$edge.length[which(phy$edge[,1]==node)][1]
+  return(branch.length)
+}
 
 
 #----------------------------
@@ -100,6 +107,9 @@ if (!inherits(data, "comparative.data"))
         stop("data is not a 'comparative' data object.")
 
 #Define variables
+
+speciesnames.col <- column.ID(data, speciesnames)
+
 primary.var.col<-column.ID(data, primary.variable)
 lag.var.col<-column.ID(data, lag.variable)
 speciesnames.col<-column.ID(data, speciesnames)
