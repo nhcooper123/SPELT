@@ -16,19 +16,17 @@ remove.incomplete.data <- function(data, var1.col, var2.col) {
 
 #ID species in tree that are not in the data
 id.missing.tree <- function(phy, data, speciesnames.col) {
-  tree.not.data <- setdiff(phy$tip.label, data[,speciesnames.col])
-  list(tree.not.data=tree.not.data)
+  setdiff(phy$tip.label, data[,speciesnames.col])
 }
 
 #ID species in data that are not in the tree
 id.missing.data <- function(phy, data, speciesnames.col) {
-  data.not.tree <- setdiff(data[,speciesnames.col], phy$tip.label)
-  list(data.not.tree=data.not.tree)
+  setdiff(data[,speciesnames.col], phy$tip.label)
 }    
 
 #Remove missing species from tree
 remove.missing.species.tree <- function(phy, data, speciesnames.col) {
-  id.missing.tree(phy, data, speciesnames.col)
+  tree.not.data <- id.missing.tree(phy, data, speciesnames.col)
   if(length(tree.not.data)>0) {
     phy <- drop.tip(phy, tree.not.data)
   } else {
@@ -39,7 +37,7 @@ remove.missing.species.tree <- function(phy, data, speciesnames.col) {
 
 #Remove missing species from data
 remove.missing.species.data <- function(phy, data, speciesnames.col) {
-  id.missing.data(phy, data, speciesnames.col)
+  data.not.tree <- id.missing.data(phy, data, speciesnames.col)
   if(length(data.not.tree)>0) {
     matches <- match(data[,speciesnames.col], data.not.tree)
     data <- subset(data, matches!=0)
@@ -56,7 +54,7 @@ total.nodes <- function(phy) {
 
 #Identify cherries (independent pairs of nodes)
 cherry.nodes <- function(phy) {
-  names(which(table(phy$edge[,1][phy$edge[,2] <= total.nodes(phy)])==2))
+  names(which(table(phy$edge[,1][phy$edge[,2]<=total.nodes(phy)])==2))
 }
 
 #Exclude branches above an age limit
@@ -70,25 +68,22 @@ age.limit <- function(data, branch.col, age.limit)
 }
 
 #Identify species coming from node
-node.species <- function(phy, node) {
-  for (i in seq_along(node)) {
-    species1<-phy$tip.label[phy$edge[,2][which(phy$edge[,1]==node[i])][1]]
-    species2<-phy$tip.label[phy$edge[,2][which(phy$edge[,1]==node[i])][2]]
+node.species <- function(phy, node.list) {
+    species1<-sapply(node.list, function(x) phy$tip.label[phy$edge[,2][which(phy$edge[,1]==x)][1]])
+    species2<-sapply(node.list, function(x) phy$tip.label[phy$edge[,2][which(phy$edge[,1]==x)][2]])
 
     list(species1=species1, species2=species2)
   }  
 }
 
 #Extract data for species
-contrast.data <- function(data, variable, species) {
-  variable.col <- column.ID(data, variable)
-  species.data <- data[which(rownames(data)==species),variable.col]
+contrast.data <- function(data, variable.col, species.list) {
+  species.data <- sapply(species.list, function(x) data[which(rownames(data)==x),variable.col])
 }
 
 #Extract branch length for contrast between two species
-branch.length.pair <- function(node) {
-  branch.length <- phy$edge.length[which(phy$edge[,1]==node)][1]
-  return(branch.length)
+branch.length.pair <- function(node.list) {
+  sapply(node.list, function(x) phy$edge.length[which(phy$edge[,1]==x)][1])
 }
 
 
