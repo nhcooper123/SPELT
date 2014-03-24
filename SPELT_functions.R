@@ -38,8 +38,8 @@ remove.missing.species.tree <- function(phy, data, speciesnames.col) {
 remove.missing.species.data <- function(phy, data, speciesnames.col) {
   data.not.tree <- id.missing.data(phy, data, speciesnames.col)
   if(length(data.not.tree)>0) {
-    matches <- match(data[,speciesnames.col], data.not.tree)
-    data <- subset(data, matches!=0)
+    matches <- match(data[,speciesnames.col], data.not.tree, nomatch =0)
+    data <- subset(data, matches==0)
   } else {
     data <- data
   }
