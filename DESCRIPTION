@@ -1,0 +1,13 @@
+Package: SPELT
+Title: Species Pairs Evolutionary Lag Test (SPELT)
+Description: Functions required to use SPELT - a method allowing you to detect
+    whether one variable is evolving in response to another but with a time
+    lag. Based on the method of Deaner and Nunn 1999.
+Version: 0.1
+Author: Natalie Cooper <ncooper@tcd.ie>
+Maintainer: Natalie Cooper <ncooper@tcd.ie>
+Depends:
+    R (>= 2.10),
+    ape,
+    caper
+License: GPL (>= 2)
