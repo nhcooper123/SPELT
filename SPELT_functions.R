@@ -26,7 +26,7 @@ id.missing.data <- function(phy, data, speciesnames.col) {
 remove.missing.species.tree <- function(phy, data, speciesnames.col) {
   tree.not.data <- id.missing.tree(phy, data, speciesnames.col)
   if (length(tree.not.data) > 0) {
-     phy <- drop.tip(phy, tree.not.data)
+    phy <- drop.tip(phy, tree.not.data)
   }
   return(phy)
 }
@@ -35,8 +35,8 @@ remove.missing.species.tree <- function(phy, data, speciesnames.col) {
 remove.missing.species.data <- function(phy, data, speciesnames.col) {
   data.not.tree <- id.missing.data(phy, data, speciesnames.col)
   if (length(data.not.tree) > 0) {
-     matches <- match(data[,speciesnames.col], data.not.tree, nomatch = 0)
-     data <- subset(data, matches == 0)
+    matches <- match(data[,speciesnames.col], data.not.tree, nomatch = 0)
+    data <- subset(data, matches == 0)
   }
   return(data)
 }
@@ -48,7 +48,7 @@ total.nodes <- function(phy) {
 
 # Identify cherries (independent pairs of species from one node)
 cherry.nodes <- function(phy) {
-  names(which(table(phy$edge[, 1][phy$edge[, 2]<=total.nodes(phy)]) == 2))
+  names(which(table(phy$edge[, 1][phy$edge[, 2] <= total.nodes(phy)]) == 2))
 }
 
 # Identify 1st species coming from node
@@ -127,11 +127,24 @@ add.SPELT.contrasts.data <- function(SPELT.data) {
   return(SPELT.data)
 }
 
+# Remove branches shorter than user defined age limit
+remove.young.branches <- function(SPELT.data, age.limit = NULL) {
+  if (!is.null(age.limit)) {
+    SPELT.data <- SPELT.data[-(c(which(SPELT.data$branch.length < age.limit))), ]
+  }
+    if (nrow(SPELT.data) < 3) {
+      stop("< 3 branches longer than age limit")
+    }
+  return(SPELT.data) 
+}
+
 # Combining all functions for data collation
-get.SPELT.data <- function(phy, data, node.list, var1.col, var2.col, SPELT.data) {
+get.SPELT.data <- function(phy, data, node.list, var1.col, var2.col, 
+                           SPELT.data, age.limit = NULL) {
   SPELT.data <- build.SPELT.data(phy)
   SPELT.data <- add.SPELT.data(phy, data, node.list, var1.col, var2.col, SPELT.data)
   SPELT.data <- get.raw.contrasts(SPELT.data)
+  SPELT.data <- remove.young.branches(SPELT.data, age.limit)
   SPELT.data <- add.SPELT.contrasts.data(SPELT.data)
   return(SPELT.data)
 }
@@ -141,31 +154,41 @@ fit.lag.model <- function(SPELT.data) {
   lag.model <- lm(SPELT.data$residuals ~ SPELT.data$branch.length)
 }
 
+
+
+
+
+
+
+
+# Collate details for summary and plot outputs
+SPELT.summary.details <- function(SPELT.results) {
+  details <- paste("SPELT results: primary variable = ", SPELT.results$variables$primary.variable,
+                      ", lag variable = ", SPELT.results$variables$lag.variable, sep = "")
+  if (!is.null(SPELT.results$age.limit)) {
+    age.limit <- paste("age limit = ", SPELT.results$age.limit, sep = "")
+  } else {
+    age.limit <- "age limit = NULL"
+  }
+  return(list(details, age.limit))
+}
+
 # Plotting function for SPELT objects
 plot.SPELT <- function(SPELT.results) {
-  plot(SPELT.data[,10] ~ SPELT.data[,7], xlab = "divergence time", 
-       ylab = "residuals", main = "SPELT plot", pch = 16)
-  abline(lag.model(SPELT.data))
+  par(bty = "l")
+  plot(SPELT.results$data$residuals ~ SPELT.results$data$branch.length, 
+       xlab = paste("divergence time (", SPELT.summary.details(SPELT.results)[[2]],")", sep = ""),
+       ylab = "residuals", main = SPELT.summary.details(SPELT.results)[[1]], 
+       cex.main = 0.8, pch = 16, las = 1)
+  abline(fit.lag.model(SPELT.results$data))
   abline(0,0,lty = 2)
 }  
 
 #Summary function for SPELT objects
-summary.SPELT <- function(object, ...) {
-  ans <- list(call = object$call)
-  class(ans) <- "summary.SPELT"
-  estimate <- unclass(summary(object)$coefficients)[1:2]
-  sterr <- unclass(summary(object)$coefficients)[3:4]
-  t <- unclass(summary(object)$coefficients)[5:6]
-  p <- unclass(summary(object)$coefficients)[7:8]
-  coef <- cbind(estimate, sterr, t, p)
-  colnames(coef) <- c("Estimate", "Std. Error", "t value", 
-                      "Pr(>|t|)")
-  ans$coefficients <- coef
-  ans$df <- unclass(summary(object)$df)[2]
-  ans$AIC <- AIC(object)
-  ans$r.squared <- unclass(summary(object)$r.squared)
-  return(ans)
-  ans$fitted <- fitted(object)
-  ans$residuals <- residuals(object)
-  
+summary.SPELT <- function(SPELT.results) {
+  cat("\nSPELT Details:\n", SPELT.summary.details(SPELT.results)[[1]])
+  cat("\n",SPELT.summary.details(SPELT.results)[[2]], "\n")
+  print(SPELT.results$summary)
 }
+
+
