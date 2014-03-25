@@ -298,19 +298,6 @@ abline(lag.model)
 
 abline(0,0,lty = 2)
 
-
-RET <- list(model = fm, formula = formula, call = call, RMS = RMS, 
-        NMS = NMS, NSSQ = NSSQ[1], RSSQ = RSSQ[1], aic = aic, 
-        aicc = aicc, n = n, k = k, sterr = sterr, fitted = pred, 
-        residuals = res, phyres = pres, x = x, data = data, varNames = varNames, 
-        y = y, param = fixedPar, mlVals = mlVals, namey = namey, 
-        bounds = bounds, Vt = Vt, dname = dname)
-    class(RET) <- "SPELT"
-
-return(RET)
-
-
-
 return(list(data = pairs.data, dropped = list(Tree.not.data = Tree.not.data, Data.not.tree = Data.not.tree), age.limit = age.limit))
 
 }
