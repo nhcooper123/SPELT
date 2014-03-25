@@ -4,11 +4,9 @@ This repository contains functions needed to use SPELT.
 
 ## Installing SPELT
 
-Clone the repository with
+You can install directly from GitHub if you have the devtools package installed:
 
-    git clone git://github.com/nhcooper123/SPELT.git
+	library(devtools)
+	install_github("SPELT", username = "nhcooper123")
 
-The package should then be installable using the terminal as follows:
-
-	cd SPELT
-	R CMD INSTALL --preclean SPELT
+Magical!
