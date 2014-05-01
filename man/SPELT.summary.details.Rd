@@ -16,7 +16,7 @@ Collates names of variables and age limit for summary
 functions.
 }
 \examples{
-data(shorebird)
+data(shorebird, package="caper")
 SPELT.results <- SPELT(shorebird.tree, shorebird.data,
                          "F.Mass", "Egg.Mass", "Species")
 summary(SPELT.results)

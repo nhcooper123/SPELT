@@ -19,7 +19,7 @@ variable contrasts, forced through the origin, and extracts
 residuals from the model.
 }
 \examples{
-see get.SPELT.data
+# see get.SPELT.data
 }
 \seealso{
 \code{\link{get.SPELT.data}}

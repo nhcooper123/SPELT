@@ -18,7 +18,7 @@ contrasts (through the origin), against divergence time for
 all species pairs.
 }
 \examples{
-data(shorebird)
+data(shorebird, package="caper")
 SPELT.results <- SPELT(shorebird.tree, shorebird.data,
                          "F.Mass", "Egg.Mass", "Species")
 plot(SPELT.results)

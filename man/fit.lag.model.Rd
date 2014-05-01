@@ -17,7 +17,7 @@ primary varibale contrasts against divergence time for each
 species pair.
 }
 \examples{
-see SPELT
+# see SPELT
 }
 \seealso{
 \code{\link{get.SPELT.data}}

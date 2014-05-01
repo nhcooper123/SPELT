@@ -15,7 +15,7 @@ Identifies all cherries, i.e. independent pairs of species
 from one node, in a phylogeny.
 }
 \examples{
-data(shorebird)
+data(shorebird, package="caper")
 cherry.nodes(shorebird.tree)
 }
 \seealso{

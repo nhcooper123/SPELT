@@ -31,6 +31,6 @@ the residuals. See \code{\link{get.SPELT.data}} for
 examples.
 }
 \examples{
-see get.SPELT.data
+# see get.SPELT.data
 }
 
