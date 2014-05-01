@@ -10,16 +10,17 @@
   \item{...}{Additional arguments to other methods (ignored)}
 }
 \value{
-plot with model as a solid line, and the 0,0 line as a
-dashed line with details of variable and age.limit
+Plot with SPELT model as a solid line, and the 0,0 line as a
+dashed line}
 }
 \description{
 Plots residuals from a model of lag variable contrasts ~
 primary variable contrasts (through the origin), against
-divergence time for all species pairs.
+divergence time for all species pairs. Includes details of variables 
+used and user defined \code{age.limit} for branch lengths in the title
 }
 \examples{
-data(shorebird, package="caper")
+data(shorebird, package = "caper")
 SPELT.results <- SPELT(shorebird.tree, shorebird.data,
                          "F.Mass", "Egg.Mass", "Species")
 plot(SPELT.results)
