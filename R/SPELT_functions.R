@@ -34,7 +34,7 @@ build.SPELT.data <- function(phy) {
 }
 
 # Add species and variable data into SPELT dataframe
-add.SPELT.data <- function(phy, data, node.list, var1.col, var2.col, SPELT.data) {
+add.SPELT.data <- function(phy, data, node.list, var1.col, var2.col, speciesnames.col, SPELT.data) {
   SPELT.data$species1 <- node.species1(phy,node.list)
   SPELT.data$species2 <- node.species2(phy,node.list)
   SPELT.data$species1.var1 <- get.data(data, var1.col, speciesnames.col, SPELT.data$species1)
