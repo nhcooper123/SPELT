@@ -20,7 +20,7 @@ is equal to the number of cherries from
 \code{\link{cherry.nodes}}.
 }
 \examples{
-data(shorebird)
+data(shorebird, package="caper")
 empty.dataset <- build.SPELT.data(shorebird.tree)
 head(empty.dataset)
 }

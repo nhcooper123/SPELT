@@ -44,7 +44,7 @@ species pairs they need to trust the analyses (the default
 is 3).
 }
 \examples{
-data(shorebird)
+data(shorebird, package="caper")
 SPELT.results <- SPELT(shorebird.tree, shorebird.data,
                          "F.Mass", "Egg.Mass", "Species")
 summary(SPELT.results)

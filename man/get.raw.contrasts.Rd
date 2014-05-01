@@ -26,7 +26,7 @@ contrast so these may be positive or negative. See
 \code{\link{get.SPELT.data}} for examples.
 }
 \examples{
-see get.SPELT.data
+# see get.SPELT.data
 }
 \seealso{
 \code{\link{build.SPELT.data}},

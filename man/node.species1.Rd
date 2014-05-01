@@ -19,7 +19,7 @@ selects either the first ones listed
 (\code{\link{node.species2}}).
 }
 \examples{
-data(shorebird)
+data(shorebird, package="caper")
 cherry.node.list <- cherry.nodes(shorebird.tree)
 node.species1(shorebird.tree, cherry.node.list)
 node.species2(shorebird.tree, cherry.node.list)

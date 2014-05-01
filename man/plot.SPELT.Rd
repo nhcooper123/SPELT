@@ -2,11 +2,12 @@
 \alias{plot.SPELT}
 \title{Plotting function for SPELT objects}
 \usage{
-\method{plot}{SPELT}(SPELT.results)
+\method{plot}{SPELT}(x, ...)
 }
 \arguments{
-  \item{SPELT.results}{object of class 'SPELT' from
-  \code{\link{SPELT}}}
+  \item{x}{object of class 'SPELT' from
+    \code{\link{SPELT}}}
+  \item{...}{Additional arguments to other methods (ignored)}
 }
 \value{
 plot with model as a solid line, and the 0,0 line as a
@@ -18,7 +19,7 @@ primary variable contrasts (through the origin), against
 divergence time for all species pairs.
 }
 \examples{
-data(shorebird)
+data(shorebird, package="caper")
 SPELT.results <- SPELT(shorebird.tree, shorebird.data,
                          "F.Mass", "Egg.Mass", "Species")
 plot(SPELT.results)

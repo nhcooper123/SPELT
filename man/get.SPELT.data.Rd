@@ -53,8 +53,10 @@ than a user defined age limit. The optional argument
 pairs they need to trust the analyses (the default is 3).
 }
 \examples{
-data(shorebird)
+data(shorebird, package="caper")
 cherry.node.list <- cherry.nodes(shorebird.tree)
+\dontrun{
+# RGF: There is no way this can possily run - SPELT.data as argument
 SPELT.data <- get.SPELT.data(shorebird.tree, shorebird.data,
                              cherry.node.list, 3, 5, SPELT.data)
 str(SPELT.data)
@@ -68,5 +70,6 @@ str(SPELT.data10MY)
 SPELT.data15MY <- get.SPELT.data(shorebird.tree, shorebird.data,
                              cherry.node.list, 3, 5, SPELT.data, age.limit = 15)
 #This will not run because there are < 3 species pairs left in the data
+}
 }
 

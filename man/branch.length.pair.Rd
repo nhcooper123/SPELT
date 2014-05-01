@@ -17,7 +17,7 @@ Finds the lengths of the branches leading to pair of
 species subtending from a given set of nodes.
 }
 \examples{
-data(shorebird)
+data(shorebird, package="caper")
 cherry.node.list <- cherry.nodes(shorebird.tree)
 branch.length.pair(shorebird.tree, cherry.node.list)
 }

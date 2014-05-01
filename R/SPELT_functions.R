@@ -170,19 +170,20 @@ SPELT.summary.details <- function(SPELT.results) {
 }
 
 # Plotting function for SPELT objects
-plot.SPELT <- function(SPELT.results) {
+plot.SPELT <- function(x, ...) {
   par(bty = "l")
-  plot(SPELT.results$data$residuals ~ SPELT.results$data$branch.length, 
-       xlab = paste("divergence time (", SPELT.summary.details(SPELT.results)[[2]],")", sep = ""),
+  plot(x$data$residuals ~ x$data$branch.length, 
+       xlab = paste("divergence time (", SPELT.summary.details(x)[[2]],")", sep = ""),
        ylab = "residuals", cex.main = 0.8, pch = 16, las = 1,
-       main = paste("SPELT results: ", SPELT.summary.details(SPELT.results)[[1]], sep = ""))
-  abline(fit.lag.model(SPELT.results$data))
+       main = paste("SPELT results: ", SPELT.summary.details(x)[[1]], sep = ""))
+  abline(fit.lag.model(x$data))
   abline(0,0,lty = 2)
 }  
 
 # Summary function for SPELT objects
-summary.SPELT <- function(SPELT.results) {
-  cat("\nSPELT Details:\n", SPELT.summary.details(SPELT.results)[[1]])
-  cat("\n",SPELT.summary.details(SPELT.results)[[2]], "\n")
-  print(SPELT.results$summary)
+summary.SPELT <- function(object, ...) {
+  # RGF: Consider using message(), not cat()
+  cat("\nSPELT Details:\n", SPELT.summary.details(object)[[1]])
+  cat("\n",SPELT.summary.details(object)[[2]], "\n")
+  print(object$summary)
 }
