@@ -16,7 +16,7 @@ Magical!
 
 The package has lots of internal functions with help files but the only function you really need is SPELT:
 
-	data(shorebird)
+	data(shorebird, package = "caper")
 	SPELT.results <- SPELT(shorebird.tree, shorebird.data,
                          "F.Mass", "Egg.Mass", "Species")
 	summary(SPELT.results)
