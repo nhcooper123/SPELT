@@ -10,16 +10,19 @@ SPELT(phy, data, primary.variable, lag.variable, speciesnames, age.limit = NULL,
 
   \item{data}{dataframe of class 'data.frame'}
 
-  \item{node.list}{vector of node labels}
+  \item{primary.variable}{column name of the variable thought to drive
+  evolution of the lag variable}
 
-  \item{var1.col}{column number of variable 1}
+  \item{lag.variable}{column name of the variable thought to lag
+  behind the primary variable}
 
-  \item{var2.col}{column number of variable 2}
-
-  \item{SPELT.data}{name of SPELT dataframe}
+  \item{speciesnames}{column name of the column containing species names}
 
   \item{age.limit}{minimum age of branches to retain in
   SPELT. Default = NULL}
+
+  \item{warn.dropped}{If TRUE the function prints a list of species
+  found in the phylogeny but not the data and vice versa. Default = TRUE}
 
   \item{cut.off}{number of rows that must remain in the
   data for SPELT to continue. Default = 3}
@@ -32,9 +35,8 @@ data, the primary variable, lag variable, and age limit
 entered by the user, and the number of cherries.
 }
 \description{
-First the function creates a dataframe via
-\code{\link{get.SPELT.data}}. It then fits a model of
-residuals from lag variables contrasts ~ primary variable
+The function fits a model of
+residuals from lag variable contrasts ~ primary variable
 contrasts against divergence time for each species pair.
 The optional argument \code{age.limit} allows the user to
 removes species pairs with branches that are shorter (i.e.
@@ -44,7 +46,7 @@ species pairs they need to trust the analyses (the default
 is 3).
 }
 \examples{
-data(shorebird, package="caper")
+data(shorebird, package = "caper")
 SPELT.results <- SPELT(shorebird.tree, shorebird.data,
                          "F.Mass", "Egg.Mass", "Species")
 summary(SPELT.results)
