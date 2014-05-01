@@ -12,7 +12,7 @@ You can install directly from GitHub if you have the devtools package installed:
 	install_github("SPELT", username = "nhcooper123")
 	library(SPELT)
 
-Magical!
+Totally magical!
 
 ## Using SPELT
 
