@@ -1,4 +1,4 @@
-#exportPattern("^[^\\.]")
+## exportPattern("^[^\\.]")
 
 ## 1. SPELT
 export(SPELT)
