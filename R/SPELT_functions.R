@@ -84,10 +84,10 @@ remove.young.branches <- function(SPELT.data, age.limit = NULL, cut.off = 3) {
 }
 
 # Create SPELT dataset
-get.SPELT.data <- function(phy, data, node.list, var1.col, var2.col, 
+get.SPELT.data <- function(phy, data, node.list, var1.col, var2.col, speciesnames.col,
                            SPELT.data, age.limit = NULL, cut.off) {
   SPELT.data <- build.SPELT.data(phy)
-  SPELT.data <- add.SPELT.data(phy, data, node.list, var1.col, var2.col, SPELT.data)
+  SPELT.data <- add.SPELT.data(phy, data, node.list, var1.col, var2.col, speciesnames.col, SPELT.data)
   SPELT.data <- get.raw.contrasts(SPELT.data)
   SPELT.data <- remove.young.branches(SPELT.data, age.limit, cut.off)
   SPELT.data <- add.SPELT.contrasts.data(SPELT.data)
@@ -142,7 +142,7 @@ SPELT <- function(phy, data, primary.variable, lag.variable, speciesnames,
   
   # Collate data required for SPELT analyses
   SPELT.data <- get.SPELT.data(phy, data, node.list, 
-                               var1.col, var2.col, SPELT.data, age.limit, cut.off)
+                               var1.col, var2.col, speciesnames.col, SPELT.data, age.limit, cut.off)
 
   # Fit SPELT model 
   SPELT.model <- fit.lag.model(SPELT.data)
