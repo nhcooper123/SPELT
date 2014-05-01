@@ -1,6 +1,6 @@
 # SPELT: Species Pairs Evolutionary Lag Test (SPELT)
 
-[![Build Status](https://travis-ci.org/richfitz/SPELT.png?branch=master)](https://travis-ci.org/richfitz/SPELT)
+[![Build Status](https://travis-ci.org/nhcooper123/SPELT.png?branch=master)](https://travis-ci.org/nhcooper123/SPELT)
 
 This repository contains functions needed to use SPELT.
 
