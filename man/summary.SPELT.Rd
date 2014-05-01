@@ -2,11 +2,12 @@
 \alias{summary.SPELT}
 \title{Summary function for SPELT objects}
 \usage{
-\method{summary}{SPELT}(SPELT.results)
+\method{summary}{SPELT}(object, ...)
 }
 \arguments{
-  \item{SPELT.results}{object of class 'SPELT' from
-  \code{\link{SPELT}}}
+  \item{object}{object of class 'SPELT' from
+    \code{\link{SPELT}}}
+  \item{...}{Additional arguments to other methods (ignored)}  
 }
 \value{
 summary.lm output with details of variable and age.limit
