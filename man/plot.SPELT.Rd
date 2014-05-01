@@ -11,7 +11,7 @@
 }
 \value{
 Plot with SPELT model as a solid line, and the 0,0 line as a
-dashed line}
+dashed line
 }
 \description{
 Plots residuals from a model of lag variable contrasts ~
