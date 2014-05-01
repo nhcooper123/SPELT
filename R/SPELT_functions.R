@@ -37,10 +37,10 @@ build.SPELT.data <- function(phy) {
 add.SPELT.data <- function(phy, data, node.list, var1.col, var2.col, SPELT.data) {
   SPELT.data$species1 <- node.species1(phy,node.list)
   SPELT.data$species2 <- node.species2(phy,node.list)
-  SPELT.data$species1.var1 <- get.data(data, var1.col, SPELT.data$species1)
-  SPELT.data$species2.var1 <- get.data(data, var1.col, SPELT.data$species2)
-  SPELT.data$species1.var2 <- get.data(data, var2.col, SPELT.data$species1)
-  SPELT.data$species2.var2 <- get.data(data, var2.col, SPELT.data$species2)
+  SPELT.data$species1.var1 <- get.data(data, var1.col, speciesnames.col, SPELT.data$species1)
+  SPELT.data$species2.var1 <- get.data(data, var1.col, speciesnames.col, SPELT.data$species2)
+  SPELT.data$species1.var2 <- get.data(data, var2.col, speciesnames.col, SPELT.data$species1)
+  SPELT.data$species2.var2 <- get.data(data, var2.col, speciesnames.col, SPELT.data$species2)
   SPELT.data$branch.length <- branch.length.pair(phy, node.list)
   return(SPELT.data)
 }
