@@ -10,18 +10,19 @@
   \item{...}{Additional arguments to other methods (ignored)}  
 }
 \value{
-summary.lm output with details of variable and age.limit
+\code{summary.lm} output
 }
 \description{
 Summary output from a linear model of residuals from a
 model of lag variable contrasts ~ primary variable
 contrasts (through the origin), against divergence time for
-all species pairs.
+all species pairs. Includes details of variables 
+used and user defined \code{age.limit} for branch lengths
 }
 \examples{
-data(shorebird, package="caper")
+data(shorebird, package = "caper")
 SPELT.results <- SPELT(shorebird.tree, shorebird.data,
                          "F.Mass", "Egg.Mass", "Species")
-plot(SPELT.results)
+summary(SPELT.results)
 }
 
