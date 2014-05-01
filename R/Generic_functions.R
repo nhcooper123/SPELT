@@ -41,8 +41,8 @@ remove.missing.species.data <- function(phy, data, speciesnames.col) {
   return(data)
 }
 
-# Identify total number of nodes in tree
-total.nodes <- function(phy) {
+# Identify total number of tips in tree
+total.tips <- function(phy) {
   length(phy$tip.label)
 }
 

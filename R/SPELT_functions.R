@@ -2,7 +2,7 @@
 
 # Identify cherries
 cherry.nodes <- function(phy) {
-  names(which(table(phy$edge[, 1][phy$edge[, 2] <= total.nodes(phy)]) == 2))
+  names(which(table(phy$edge[, 1][phy$edge[, 2] <= total.tips(phy)]) == 2))
 }
 
 # Identify species coming from nodes of a phylogeny
@@ -182,8 +182,7 @@ plot.SPELT <- function(x, ...) {
 
 # Summary function for SPELT objects
 summary.SPELT <- function(object, ...) {
-  # RGF: Consider using message(), not cat()
-  cat("\nSPELT Details:\n", SPELT.summary.details(object)[[1]])
-  cat("\n",SPELT.summary.details(object)[[2]], "\n")
+  message("\nSPELT Details:\n", SPELT.summary.details(object)[[1]])
+  message("\n",SPELT.summary.details(object)[[2]], "\n")
   print(object$summary)
 }
