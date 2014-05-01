@@ -7,7 +7,9 @@ Version: 0.1
 Author: Natalie Cooper <ncooper@tcd.ie>
 Maintainer: Natalie Cooper <ncooper@tcd.ie>
 Depends:
-    R (>= 2.10),
-    ape,
+    R (>= 2.10)
+Imports:
+    ape
+Suggests:
     caper
 License: GPL (>= 2)

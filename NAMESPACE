@@ -1,1 +1,2 @@
 exportPattern("^[^\\.]")
+importFrom(ape, multi2di)
