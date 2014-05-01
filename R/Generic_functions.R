@@ -47,7 +47,7 @@ total.nodes <- function(phy) {
 }
 
 # Extract data for species
-get.data <- function(data, variable.col, species.list) {
+get.data <- function(data, variable.col, speciesnames.col, species.list) {
   sapply(species.list, function(x) 
-         data[which(rownames(data) == x),variable.col])
+         data[which(data[, speciesnames.col] == x),variable.col])
 }
