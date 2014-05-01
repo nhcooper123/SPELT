@@ -1,2 +1,11 @@
-exportPattern("^[^\\.]")
+#exportPattern("^[^\\.]")
+
+## 1. SPELT
+export(SPELT)
+
+## 2. plot and summary:
+
+S3method(plot, SPELT)
+S3method(summary, SPELT)
+
 importFrom(ape, multi2di)
