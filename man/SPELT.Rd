@@ -18,7 +18,7 @@ SPELT(phy, data, primary.variable, lag.variable, speciesnames, age.limit = NULL,
 
   \item{speciesnames}{column name of the column containing species names}
 
-  \item{age.limit}{minimum age of branches to retain in
+  \item{age.limit}{maximum age of branches to retain in
   SPELT. Default = NULL}
 
   \item{warn.dropped}{If TRUE the function prints a list of species
@@ -30,7 +30,7 @@ SPELT(phy, data, primary.variable, lag.variable, speciesnames, age.limit = NULL,
 \value{
 An object of class 'SPELT' which contains the dataframe for
 SPELT, the summary of the SPELT model, a list of species
-dropped becasue they were not in both the phylogeny and
+dropped because they were not in both the phylogeny and
 data, the primary variable, lag variable, and age limit
 entered by the user, and the number of cherries.
 }
@@ -39,8 +39,8 @@ The function fits a model of
 residuals from lag variable contrasts ~ primary variable
 contrasts against divergence time for each species pair.
 The optional argument \code{age.limit} allows the user to
-removes species pairs with branches that are shorter (i.e.
-younger) than a user defined age limit. The optional
+removes species pairs with branches that are longer (i.e.
+older) than a user defined age limit. The optional
 argument \code{cut.off} allows users to decide how many
 species pairs they need to trust the analyses (the default
 is 3).
