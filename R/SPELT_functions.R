@@ -72,13 +72,15 @@ add.SPELT.contrasts.data <- function(SPELT.data) {
   return(SPELT.data)
 }
 
-# Remove branches shorter than user defined age limit
-remove.young.branches <- function(SPELT.data, age.limit = NULL, cut.off = 3) {
+# Remove branches older than user defined age limit
+# Needed to check whether lag has occurred quickly and thus only
+# seen in younger branches
+remove.old.branches <- function(SPELT.data, age.limit = NULL, cut.off = 3) {
   if (!is.null(age.limit)) {
-    SPELT.data <- SPELT.data[-(c(which(SPELT.data$branch.length < age.limit))), ]
+    SPELT.data <- SPELT.data[which(SPELT.data$branch.length < age.limit), ]
   }
     if (nrow(SPELT.data) < cut.off) {
-      stop(paste("< ", cut.off, " branches longer than age limit"))
+      stop(paste("< ", cut.off, " branches shorter than age limit"))
     }
   return(SPELT.data) 
 }
@@ -89,7 +91,7 @@ get.SPELT.data <- function(phy, data, node.list, var1.col, var2.col, speciesname
   SPELT.data <- build.SPELT.data(phy)
   SPELT.data <- add.SPELT.data(phy, data, node.list, var1.col, var2.col, speciesnames.col, SPELT.data)
   SPELT.data <- get.raw.contrasts(SPELT.data)
-  SPELT.data <- remove.young.branches(SPELT.data, age.limit, cut.off)
+  SPELT.data <- remove.old.branches(SPELT.data, age.limit, cut.off)
   SPELT.data <- add.SPELT.contrasts.data(SPELT.data)
   return(SPELT.data)
 }
