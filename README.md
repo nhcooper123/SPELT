@@ -2,7 +2,8 @@
 
 [![Build Status](https://travis-ci.org/nhcooper123/SPELT.png?branch=master)](https://travis-ci.org/nhcooper123/SPELT)
 
-This repository contains functions needed to use SPELT.
+This repository contains functions needed to use SPELT. You can cite this code using the DOI:
+https://zenodo.org/badge/4008/nhcooper123/SPELT.png
 
 ## Installing SPELT
 
