@@ -77,7 +77,7 @@ add.SPELT.contrasts.data <- function(SPELT.data) {
 # seen in younger branches
 remove.old.branches <- function(SPELT.data, age.limit = NULL, cut.off = 3) {
   if (!is.null(age.limit)) {
-    SPELT.data <- SPELT.data[which(SPELT.data$branch.length < age.limit), ]
+    SPELT.data <- SPELT.data[which(SPELT.data$branch.length <= age.limit), ]
   }
     if (nrow(SPELT.data) < cut.off) {
       stop(paste("< ", cut.off, " branches shorter than age limit"))
