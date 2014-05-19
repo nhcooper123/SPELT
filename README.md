@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/nhcooper123/SPELT.png?branch=master)](https://travis-ci.org/nhcooper123/SPELT)
 
-[![Build Status](https://zenodo.org/badge/4008/nhcooper123/SPELT.png)](https://travis-ci.org/nhcooper123/SPELT)
+[![Build Status](https://zenodo.org/badge/4008/nhcooper123/SPELT.png)](https://github.com/nhcooper123/SPELT/releases)
 
 This repository contains functions needed to use SPELT. 
 
@@ -18,7 +18,7 @@ Totally magical!
 
 ## Using SPELT
 
-The package has lots of internal functions with help files but the only function you really need is SPELT:
+The package has lots of internal functions but the only function you really need is SPELT:
 
 	data(shorebird, package = "caper")
 	SPELT.results <- SPELT(shorebird.tree, shorebird.data,
@@ -26,3 +26,5 @@ The package has lots of internal functions with help files but the only function
 	summary(SPELT.results)
 	plot(SPELT.results)
 	str(SPELT.results$data)
+
+Check out ?SPELT in R for more details.
