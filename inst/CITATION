@@ -1,9 +1,11 @@
-bibentry("Article",
-   title = "Investigating evolutionary lag using paired comparisons: 
+citHeader("To cite SPELT in publications please use:")
+
+citEntry(entry = "Article",
+  title        = "Investigating evolutionary lag using paired comparisons: 
             a simulation test",
-   author = c(person(c("Charles", "L."), "Nunn"), person("Natalie", "Cooper")),
-   journal = "Evolution",
-   number      = 69,
-   year   = 2015,
-   pages   = 245–253,
-   mheader = "To cite SPELT in publications please use:")
+  author       = personList(as.person("Charles L. Nunn"),
+                   as.person("Natalie Cooper")),
+  journal      = "Evolution",
+  year         = "2015",
+  volume       = "69",
+  pages        = "245--253")
