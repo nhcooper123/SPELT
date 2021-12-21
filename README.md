@@ -11,7 +11,7 @@ This repository contains functions needed to use SPELT.
 You can install directly from GitHub if you have the devtools package installed:
 
 	library(devtools)
-	install_github("SPELT", username = "nhcooper123")
+	install_github("nhcooper123/SPELT")
 	library(SPELT)
 
 Totally magical!
